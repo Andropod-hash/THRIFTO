@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'thrifto',
     'drf_yasg',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -149,4 +150,11 @@ REST_FRAMEWORK = {
         # 'rest_framework.authentication.SessionAuthentication',
     ],
  
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        # 'rest_framework.renderers.BrowsableAPIRenderer',  # Allows you to browse the API in a user-friendly way
+    ]
 }

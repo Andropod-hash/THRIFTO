@@ -46,7 +46,7 @@ class UserRegistrationView(generics.CreateAPIView):
             },
             status=status.HTTP_201_CREATED
         ) 
-        
+
 class KYCRegistrationView(APIView):
     """
     View for KYC registration, accessible only to authenticated users.
@@ -164,6 +164,8 @@ class TwoFAValidationView(APIView):
         login(request, user, backend=request.user.backend)
 
         return Response({"message": "2FA verified successfully. Logged in."}, status=status.HTTP_200_OK)
+
+        
 class KYCUpdate(APIView):
     """
     View for updating KYC information, accessible only to authenticated users.
