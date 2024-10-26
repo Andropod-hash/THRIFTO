@@ -1,17 +1,17 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from .models import UserProfile, Device, Group
+from .models import UserProfile, Device, Employer, City, Country, SalaryRange, PasswordReset, Wallet
 from django.core.exceptions import ValidationError
 
 class UserProfileAdmin(BaseUserAdmin):
-    list_display = ('email', 'full_name', 'phone_number', 'is_staff', 'kyc_confirmed', 'is_superuser', 'is_active', 'two_fa_verified')
+    list_display = ('email', 'full_name', 'phone_number', 'is_staff', 'is_superuser', 'is_active', 'two_fa_verified')
     list_filter = ('is_staff', 'is_superuser', 'is_active', 'groups')
     filter_horizontal = ['groups']  
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         ('Personal Info', {'fields': ('full_name', 'phone_number', 'address', 'city', 'country', 'employer', 'salary_range')}),
         ('Permissions', {'fields': ('is_staff', 'is_active', 'is_superuser', 'groups')}),
-        ('Confirmations', {'fields': ('email_confirmed', 'phone_number_confirmed')}),
+        ('Confirmations', {'fields': ('email_confirmed',)}),  
         ('Important dates', {'fields': ('last_login',)}),
     )
     add_fieldsets = (
@@ -24,23 +24,39 @@ class UserProfileAdmin(BaseUserAdmin):
     ordering = ('email',)
 
 class DeviceAdmin(admin.ModelAdmin):
-    list_display = ('user', 'device_identifier', 'ip_address', 'last_login')
-    search_fields = ('user__email', 'device_identifier', 'ip_address')
-    list_filter = ('last_login',)
+    list_display = ('user', 'device_identifier')
+    search_fields = ('user__email', 'device_identifier')
 
-class GroupAdmin(admin.ModelAdmin):
-    list_display = ('name', 'admin', 'get_members_count')
-    
-    def save_model(self, request, obj, form, change):
-        # If admin is not set, assign the creator as the admin
-        if not obj.admin:
-            obj.admin = request.user
-        super().save_model(request, obj, form, change)
 
-    def get_members_count(self, obj):
-        return obj.members.count()
-    get_members_count.short_description = 'Members Count'
+class CountryAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')  
+    search_fields = ('name',)  
 
+class CityAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'country')  
+    search_fields = ('name',)  
+    list_filter = ('country',)  
+
+class SalaryRangeAdmin(admin.ModelAdmin):
+    list_display = ('id', 'salary_range')  
+    search_fields = ('salary_range',) 
+    list_filter = ('salary_range',)  
+
+class PasswordResetAdmin(admin.ModelAdmin):
+    list_display = ('user', 'reset_code', 'created_at', 'expires_at')
+
+
+class WalletAdmin(admin.ModelAdmin):
+    list_display = ('user', 'encrypted_balance') 
+
+
+
+admin.site.register(Wallet, WalletAdmin)
 admin.site.register(Device, DeviceAdmin)
-admin.site.register(Group, GroupAdmin)
+admin.site.register(SalaryRange, SalaryRangeAdmin)
+admin.site.register(Employer)  
+admin.site.register(PasswordReset, PasswordResetAdmin )
+admin.site.register(Country, CountryAdmin)
+admin.site.register(City, CityAdmin)
 admin.site.register(UserProfile, UserProfileAdmin)
+

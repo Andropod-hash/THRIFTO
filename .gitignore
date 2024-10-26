@@ -1,0 +1,4 @@
+# To ignore specific files
+Notifications/task.py
+*.pyc
+__pycache__/
